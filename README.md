@@ -1,8 +1,41 @@
-# React + Vite
+# ReactJS OpenAI Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository contains the frontend of an application that integrates with the OpenAI API, using React.js. It works in conjunction with the backend repository [expressjs-openai](https://github.com/rezadaulay/expressjs-openai).
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/rezadaulay/reactjs-openai.git
+    ```
+
+2. Navigate into the project directory:
+
+    ```bash
+    cd reactjs-openai
+    ```
+
+3. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+## Usage
+
+1. Ensure the backend server from the [expressjs-openai](https://github.com/rezadaulay/expressjs-openai) repository is running.
+
+2. Start the React development server:
+
+    ```bash
+    npm run dev
+    ```
+
+3. Visit `http://localhost:5173` in your web browser.
+
+4. Use the provided interface to interact with the OpenAI API via the backend server.
+
+## Configuration
+
+You can configure the application by modifying the `.env` file. This file contains settings such as the backend server URL.
