@@ -1,15 +1,19 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import axios from 'axios';
+import TravelGuideResult from './components/TravelGuideSuggestion';
 
 function App() {
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     destination_preferences: '',
     travel_interests: '',
     min_budget: '',
     max_budget: '',
-    start_travel_dates: '',
-    end_travel_dates: '',
+    start_travel_date: '',
+    end_travel_date: '',
     period_in_days: ''
   });
+  const [travelSuggestion, setTravelSuggestion] = useState(null);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -30,27 +34,35 @@ function App() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData)
+    setTravelSuggestion(null);
+    setIsLoading(true);
+    try {
+      const { data } = await axios.post(`${import.meta.env.VITE_BASE_API_URL}travel-guide`, {
+        destination_preferences: formData.destination_preferences,
+        travel_interests: formData.travel_interests.join(','),
+        min_budget: formData.min_budget,
+        max_budget: formData.max_budget,
+        travel_dates: formData.start_travel_date + '-' + formData.end_travel_date,
+        period_in_days: formData.period_in_days
+      });
+      setTravelSuggestion(data.answer)
+    } catch (error) {
+      console.log('error', error)
+    }
+    setIsLoading(false);
   };
 
   return (
     <>
+      <TravelGuideResult content={travelSuggestion}/>
       <div className={`container`}>
         <h1 className={`app-title`}><span><img src="./favicon.png" className={`logo`} /></span>Virtual Travel Guide</h1>
         <p className={`text-center`}>Hey there! Ready to plan your dream getaway? Just fill in the form below with your preferences, and we'll whip up some awesome vacation suggestions just for you!</p>
         <form onSubmit={handleSubmit}>
           <div className={`form-group`}>
               <label htmlFor="destination_preferences">Destination Preferences</label>
-              <select name="destination_preferences" required multiple onChange={handleMultipleSelectChange}>
-                <option value="europe">Europe</option>
-                <option value="asia">Asia</option>
-                <option value="north america">North America</option>
-                <option value="south america">South America</option>
-                <option value="africa">Africa</option>
-                <option value="oceania">Oceania</option>
-                <option value="antarctica">Antarctica</option>
-              </select>
-              <small>Choose your preferred destination type(s).</small>
+              <input type="text" name="destination_preferences" required onChange={handleInputChange}/>
+              <small>Enter places, cities, countries, or types (e.g., beach, mountains) you're interested in. Separate multiple entries with commas.</small>
           </div>
           <div className={`form-group`}>
               <label htmlFor="travel_interests">Travel Interests</label>
@@ -74,8 +86,8 @@ function App() {
           <div className={`form-group`}>
               <label htmlFor="">Travel Dates</label>
               <div className={`multiple-inputs`}>
-                <input type="date" name="start_travel_dates" required onChange={handleInputChange}/>
-                <input type="date" name="end_travel_dates" required onChange={handleInputChange}/>
+                <input type="date" name="start_travel_date" required onChange={handleInputChange}/>
+                <input type="date" name="end_travel_date" required onChange={handleInputChange}/>
               </div>
               <small>Enter the dates you plan to travel between.</small>
           </div>
@@ -84,7 +96,7 @@ function App() {
               <input type="number" name="period_in_days" required onChange={handleInputChange}/>
               <small>Enter the duration of your trip.</small>
           </div>
-          <button>Submit</button>
+          <button disabled={isLoading}>{isLoading ? 'Loading ...' : 'Submit'}</button>
         </form>
       </div>
     </>
